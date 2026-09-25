@@ -1,6 +1,6 @@
- /**
- * SAIYAN — /uptime
- * Copyright © 2026 MAGNUS
+/**
+ * CROW — /uptime
+ * Copyright © 2026 Itachi
  */
 "use strict";
 
@@ -30,15 +30,15 @@ module.exports = {
     name: "uptime",
     aliases: ["up", "ping", "وقت"],
     version: "3.0",
-    author: "MAGNUS",
+    author: "Itachi",
     countDown: 5,
     role: 2,
     category: "info",
 
-    description: "إظهار حالة سايان ومعلومات التشغيل",
+    description: "استدعاء معلومات CROW ومراقبة حالة التشغيل",
 
     guide: {
-      en: "{pn} — فحص حالة البوت"
+      en: "{pn} — استدعاء معلومات CROW"
     }
   },
 
@@ -81,25 +81,39 @@ module.exports = {
       (totalRam / 1073741824).toFixed(2);
 
     const text = [
-      "┌─〔 S A I Y A N 〕",
+      "🌌╭──────────────╮",
+      "     🐦‍⬛ C R O W",
+      "🌌╰──────────────╯",
       "",
-      `› الحالة     : ONLINE`,
-      `› التشغيل    : ${formatUptime(uptime)}`,
-      `› السرعة     : ${responseTime} ms`,
-      `› الأوامر    : ${commandCount}`,
+      "🫀 نبض النظام: 💚 مستقر",
+      "📡 الاتصال: 🟢 متصل",
       "",
-      "〔 موارد النظام 〕",
-      `RAM العملية  : ${ramUsed} MB`,
-      `RAM الجهاز   : ${systemUsed} / ${systemTotal} GB`,
+      "⏳ منذ آخر تشغيل",
+      `└─ 🕐 ${formatUptime(uptime)}`,
       "",
-      "〔 معلومات البوت 〕",
-      `ID           : ${botID}`,
-      `Prefix       : ${prefix}`,
-      `الحماية      : ACTIVE`,
+      "⚡ سرعة الاستجابة",
+      `└─ 🚀 ${responseTime} ms`,
       "",
-      "〔 SA I Y A N 〕",
-      "المطور       : MAGNUS",
-      "└────────────────"
+      "🧩 الوحدات النشطة",
+      `└─ 📦 ${commandCount} أمر`,
+      "",
+      "💾 ذاكرة CROW",
+      `└─ 🧠 ${ramUsed} MB`,
+      "",
+      "🖥️ موارد الجهاز",
+      `└─ 📊 ${systemUsed} / ${systemTotal} GB`,
+      "",
+      "🔐 معلومات الاتصال",
+      `└─ 🆔 ${botID}`,
+      `└─ 🎛️ Prefix: ${prefix}`,
+      "",
+      "🛡️ الحماية",
+      "└─ 🔵 ACTIVE",
+      "",
+      "━━━━━━━━━━━━━━━━━━",
+      "☁️ كل الأنظمة تعمل بشكل طبيعي.",
+      "👤 Itachi",
+      "━━━━━━━━━━━━━━━━━━"
     ].join("\n");
 
     return message.reply(text);
