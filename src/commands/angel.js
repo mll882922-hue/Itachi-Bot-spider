@@ -1,20 +1,21 @@
 /**
- * SAIYAN — Angel v6 — نظام الرسائل التلقائية الذكي
- * Copyright © 2026 Magnus
- * ✦ يتوقف مؤقتاً بعد 3 رسائل متتالية بدون رد بشري
- * ✦ يستأنف عند أول رسالة بشرية
- * ✦ يبدأ عدّاد الخروج بعد التوقف
- * ✦ يغادر بعد 16 دقيقة من الصمت
+ * CROW — Angel v6 — نظام الرسائل التلقائية
+ * Copyright © 2026 Itachi
+ *
+ * ✦ يرسل 3 رسائل متتالية
+ * ✦ يهدأ بعدها وينتظر أي رد بشري
+ * ✦ يعود فور ظهور رسالة جديدة
+ * ✦ إذا استمر الصمت 16 دقيقة، يغادر المجموعة
  */
 
 "use strict";
 
-const fs   = require("fs-extra");
+const fs = require("fs-extra");
 const path = require("path");
 
 const DATA = path.join(
   process.cwd(),
-  "database/data/saiyanData.json"
+  "database/data/crowData.json"
 );
 
 const SILENCE_MS = 16 * 60 * 1000;
@@ -31,19 +32,19 @@ function load() {
   return {};
 }
 
-function save(d) {
+function save(data) {
   fs.ensureDirSync(
     path.dirname(DATA)
   );
 
   fs.writeFileSync(
     DATA,
-    JSON.stringify(d, null, 2)
+    JSON.stringify(data, null, 2)
   );
 }
 
-function rand(a, b) {
-  return a + Math.random() * (b - a);
+function rand(min, max) {
+  return min + Math.random() * (max - min);
 }
 
 
@@ -52,16 +53,17 @@ function rand(a, b) {
 if (!global.GoatBot)
   global.GoatBot = {};
 
-if (!global.GoatBot.saiyanIntervals)
-  global.GoatBot.saiyanIntervals = {};
+if (!global.GoatBot.crowIntervals)
+  global.GoatBot.crowIntervals = {};
 
-if (!global.GoatBot.saiyanSilenceTimers)
-  global.GoatBot.saiyanSilenceTimers = {};
+if (!global.GoatBot.crowSilenceTimers)
+  global.GoatBot.crowSilenceTimers = {};
 
-if (!global._saiyanState)
-  global._saiyanState = {};
+if (!global._crowState)
+  global._crowState = {};
 
-// _saiyanState[tid] = {
+
+// _crowState[tid] = {
 //   consecutive,
 //   paused,
 //   pausedAt,
@@ -76,9 +78,9 @@ if (!global._saiyanState)
 if (!global._msgListeners)
   global._msgListeners = [];
 
-if (!global._saiyanListenerRegistered) {
+if (!global._crowListenerRegistered) {
 
-  global._saiyanListenerRegistered = true;
+  global._crowListenerRegistered = true;
 
   global._msgListeners.push(
     ({ threadID, messageID }) => {
@@ -86,7 +88,7 @@ if (!global._saiyanListenerRegistered) {
       const tid = String(threadID);
 
       const st =
-        global._saiyanState[tid];
+        global._crowState[tid];
 
       if (!st)
         return;
@@ -94,10 +96,12 @@ if (!global._saiyanListenerRegistered) {
       st.consecutive = 0;
       st.lastHumanTs = Date.now();
 
-      if (messageID)
+      if (messageID) {
         st.lastHumanMessageID =
           String(messageID);
+      }
 
+      // إذا وصل رد أثناء التوقف، يعود CROW للعمل
       if (st.paused) {
 
         st.paused = false;
@@ -145,23 +149,23 @@ function clearSilenceWatchdog(tid) {
 
   const timer =
     global.GoatBot
-      .saiyanSilenceTimers?.[tid];
+      .crowSilenceTimers?.[tid];
 
   if (timer)
     clearTimeout(timer);
 
   if (
     global.GoatBot
-      .saiyanSilenceTimers
+      .crowSilenceTimers
   ) {
 
     delete global.GoatBot
-      .saiyanSilenceTimers[tid];
+      .crowSilenceTimers[tid];
   }
 }
 
 
-// ── رسالة الهروب والخروج ─────────────────────────────────────────────────────
+// ── رسالة الخروج ─────────────────────────────────────────────────────────────
 
 function sendEscapeAndLeave(api, tid, st) {
 
@@ -172,18 +176,19 @@ function sendEscapeAndLeave(api, tid, st) {
 
   clearTimeout(
     global.GoatBot
-      .saiyanIntervals[tid]
+      .crowIntervals[tid]
   );
 
   delete global.GoatBot
-    .saiyanIntervals[tid];
+    .crowIntervals[tid];
 
   clearSilenceWatchdog(tid);
 
   return (async () => {
 
     const escapeMessage =
-      "هروب ابن ﭑﭑلَـڨَـ📜⍣⃟ـﹻ۪۫٘ہـ𝑯ـٰٰٰٰٖٖٖٖٖﹻ۪┇ـےـ❄️ـ┇بَِـ⥢🪽⥤ـےـٰٰٰٰٖٖٖٖٖ𝐁ـޢـٰٰٰٰٖٖٖٖٖޢـة";
+      "🐦‍⬛ شكلكم مشغولين...\n" +
+      "ما وصلني أي رد، لذلك CROW خارج الآن. 🪽";
 
     try {
 
@@ -236,8 +241,8 @@ function sendEscapeAndLeave(api, tid, st) {
     } catch (error) {
 
       global.log?.warn?.(
-        "SAIYAN",
-        `تعذر خروج البوت من ${tid}: ${error.message}`
+        "CROW",
+        `CROW لم يستطع الخروج من ${tid}: ${error.message}`
       );
 
     } finally {
@@ -251,7 +256,7 @@ function sendEscapeAndLeave(api, tid, st) {
         save(data);
       }
 
-      delete global._saiyanState[tid];
+      delete global._crowState[tid];
     }
 
   })();
@@ -267,7 +272,7 @@ function scheduleSilenceWatchdog(api, tid) {
   clearSilenceWatchdog(key);
 
   const st =
-    global._saiyanState[key];
+    global._crowState[key];
 
   if (
     !st ||
@@ -289,18 +294,18 @@ function scheduleSilenceWatchdog(api, tid) {
     );
 
   global.GoatBot
-    .saiyanSilenceTimers[key] =
+    .crowSilenceTimers[key] =
     setTimeout(
       async () => {
 
         delete global.GoatBot
-          .saiyanSilenceTimers[key];
+          .crowSilenceTimers[key];
 
         const fresh =
           load()[key];
 
         const current =
-          global._saiyanState[key];
+          global._crowState[key];
 
         if (
           !fresh?.active ||
@@ -345,11 +350,11 @@ function scheduleNext(api, tid, td) {
 
   clearTimeout(
     global.GoatBot
-      .saiyanIntervals[tid]
+      .crowIntervals[tid]
   );
 
   delete global.GoatBot
-    .saiyanIntervals[tid];
+    .crowIntervals[tid];
 
   if (
     !td?.active ||
@@ -360,10 +365,10 @@ function scheduleNext(api, tid, td) {
   }
 
   if (
-    !global._saiyanState[tid]
+    !global._crowState[tid]
   ) {
 
-    global._saiyanState[tid] = {
+    global._crowState[tid] = {
 
       consecutive: 0,
 
@@ -380,7 +385,7 @@ function scheduleNext(api, tid, td) {
   }
 
   if (
-    global._saiyanState[tid].paused
+    global._crowState[tid].paused
   ) {
 
     return;
@@ -397,12 +402,12 @@ function scheduleNext(api, tid, td) {
     );
 
   global.GoatBot
-    .saiyanIntervals[tid] =
+    .crowIntervals[tid] =
     setTimeout(
       async () => {
 
         delete global.GoatBot
-          .saiyanIntervals[tid];
+          .crowIntervals[tid];
 
         const fresh =
           load()[tid];
@@ -411,10 +416,10 @@ function scheduleNext(api, tid, td) {
           return;
 
         const st =
-          global._saiyanState[tid] ||
+          global._crowState[tid] ||
           {};
 
-        // ── 3 رسائل متتالية ────────────────────────────────────────────────
+        // ── بعد 3 رسائل ──────────────────────────────────────────────────
 
         if (
           (st.consecutive || 0) >= 3
@@ -423,7 +428,7 @@ function scheduleNext(api, tid, td) {
           st.paused = true;
           st.pausedAt = Date.now();
 
-          global._saiyanState[tid] =
+          global._crowState[tid] =
             st;
 
           scheduleSilenceWatchdog(
@@ -434,7 +439,7 @@ function scheduleNext(api, tid, td) {
           return;
         }
 
-        // ── إرسال الرسالة ──────────────────────────────────────────────────
+        // ── إرسال الرسالة ─────────────────────────────────────────────────
 
         try {
 
@@ -461,7 +466,7 @@ function scheduleNext(api, tid, td) {
           st.consecutive =
             (st.consecutive || 0) + 1;
 
-          global._saiyanState[tid] =
+          global._crowState[tid] =
             st;
 
         } catch (_) {}
@@ -480,7 +485,7 @@ function scheduleNext(api, tid, td) {
           st.paused = true;
           st.pausedAt = Date.now();
 
-          global._saiyanState[tid] =
+          global._crowState[tid] =
             st;
 
           scheduleSilenceWatchdog(
@@ -503,20 +508,20 @@ function scheduleNext(api, tid, td) {
 }
 
 
-// ── Session restore ───────────────────────────────────────────────────────────
+// ── Session restore ────────────────────────────────────────────────────────────
 
 function restoreAll(api) {
 
   if (
     global.GoatBot
-      ._saiyanRestored
+      ._crowRestored
   ) {
 
     return;
   }
 
   global.GoatBot
-    ._saiyanRestored = true;
+    ._crowRestored = true;
 
   const data = load();
 
@@ -531,10 +536,10 @@ function restoreAll(api) {
     ) {
 
       if (
-        !global._saiyanState[tid]
+        !global._crowState[tid]
       ) {
 
-        global._saiyanState[tid] = {
+        global._crowState[tid] = {
 
           consecutive: 0,
 
@@ -557,7 +562,7 @@ function restoreAll(api) {
       );
 
       if (
-        global._saiyanState[tid]
+        global._crowState[tid]
           .paused
       ) {
 
@@ -581,12 +586,12 @@ module.exports = {
 
     aliases: [
       "ang",
-      "سايان"
+      "كرو"
     ],
 
     version: "6.0",
 
-    author: "Magnus",
+    author: "Itachi",
 
     countDown: 3,
 
@@ -595,13 +600,13 @@ module.exports = {
     category: "management",
 
     description:
-      "SAIYAN — رسائل تلقائية مع مراقبة ذكية",
+      "CROW — رسائل تلقائية بأسلوب هادئ",
 
     guide: {
       en:
-        "{pn} [رسالة] [min] [max] — تشغيل\n" +
-        "{pn} off — إيقاف\n" +
-        "{pn} status — الحالة"
+        "{pn} [رسالة] [min] [max] — بدء CROW\n" +
+        "{pn} off — إيقاف CROW\n" +
+        "{pn} status — عرض حالة CROW"
     }
   },
 
@@ -640,32 +645,33 @@ module.exports = {
       if (!td?.active) {
 
         return message.reply(
-          "🌙 SAIYAN غير نشط في هذا الغروب."
+          "🌑 CROW ساكت هنا حاليًا.\n" +
+          "استخدم الأمر مرة ثانية إذا أردت تشغيله."
         );
       }
 
       const st =
-        global._saiyanState[tid] ||
+        global._crowState[tid] ||
         {};
 
       const mode =
         st.paused
-          ? "⏸️ متوقف مؤقتاً — بانتظار رد"
-          : "🟢 يعمل بشكل طبيعي";
+          ? "⏸️ أخذ استراحة — ينتظر ردًا"
+          : "🟢 موجود ويعمل";
 
       return message.reply(
 
-        "╭─〔 ⚡ SAIYAN 〕─╮\n" +
+        "╭─〔 🐦‍⬛ CROW 〕─╮\n" +
 
-        `📍 الحالة: ${mode}\n` +
+        `• الحالة: ${mode}\n` +
 
-        `💬 المحتوى: ${td.message}\n` +
+        `• الكلام: ${td.message}\n` +
 
-        `⏳ الفاصل: ${td.minSeconds}–${td.maxSeconds} ثانية\n` +
+        `• التوقيت: ${td.minSeconds}–${td.maxSeconds} ثانية\n` +
 
-        `📨 المتتالي: ${st.consecutive || 0}/3\n\n` +
+        `• الإرسال: ${st.consecutive || 0}/3\n\n` +
 
-        "👑 المطور: Magnus\n" +
+        "صاحب CROW: Itachi\n" +
 
         "╰────────────────╯"
 
@@ -683,15 +689,15 @@ module.exports = {
 
       clearTimeout(
         global.GoatBot
-          .saiyanIntervals[tid]
+          .crowIntervals[tid]
       );
 
       delete global.GoatBot
-        .saiyanIntervals[tid];
+        .crowIntervals[tid];
 
       clearSilenceWatchdog(tid);
 
-      delete global._saiyanState[tid];
+      delete global._crowState[tid];
 
       if (data[tid]) {
 
@@ -703,9 +709,11 @@ module.exports = {
 
       return message.reply(
 
-        "🛑 تم تعطيل SAIYAN في هذا الغروب.\n" +
-        "⚙️ يمكنك تشغيله من جديد متى شئت.\n" +
-        "👑 Magnus"
+        "╭─〔 🐦‍⬛ CROW 〕─╮\n" +
+        "خلاص، CROW وقف هنا.\n\n" +
+        "إذا احتجته مرة ثانية، نادِه بالأمر من جديد.\n" +
+        "Itachi\n" +
+        "╰────────────────╯"
 
       );
     }
@@ -731,7 +739,7 @@ module.exports = {
         .join(" ")
         .trim() ||
       data[tid]?.message ||
-      "⚡ SAIYAN هنا.";
+      "🐦‍⬛ CROW موجود...";
 
     const minS =
       parseInt(nums[0]) || 60;
@@ -761,7 +769,7 @@ module.exports = {
 
     // ── تهيئة الحالة ───────────────────────────────────────────────────────
 
-    global._saiyanState[tid] = {
+    global._crowState[tid] = {
 
       consecutive: 0,
 
@@ -791,21 +799,21 @@ module.exports = {
 
     return message.reply(
 
-      "╭─〔 ⚡ SAIYAN 〕─╮\n" +
+      "╭─〔 🐦‍⬛ CROW 〕─╮\n" +
 
-      "✅ تم تشغيل النظام بنجاح\n\n" +
+      "تمام، CROW صار حاضر.\n\n" +
 
-      `📝 الرسالة: ${msg}\n` +
+      `• الكلام: ${msg}\n` +
 
-      `⏱️ الفاصل: ${minS}–${maxS} ثانية\n\n` +
+      `• التوقيت: ${minS}–${maxS} ثانية\n\n` +
 
-      "🧠 بعد 3 رسائل متتابعة يتوقف مؤقتاً\n" +
+      "ثلاث رسائل متتالية، وبعدها يأخذ استراحة.\n" +
 
-      "💬 يعود للعمل عند وصول رسالة بشرية\n" +
+      "أول ما يجي رد بشري، يرجع يكمل.\n" +
 
-      "🌘 بعد 16 دقيقة من الصمت يرسل رسالة الهروب ويغادر\n\n" +
+      "وإذا مرّت 16 دقيقة بدون رد، يرسل كلمته الأخيرة ويطلع.\n\n" +
 
-      "👑 Magnus\n" +
+      "Itachi\n" +
 
       "╰────────────────╯"
 
