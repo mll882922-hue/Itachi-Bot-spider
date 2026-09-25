@@ -1,133 +1,133 @@
 /**
- * SAIYAN — /help — Command Center
- * Copyright © 2026 Magnus
- * Saiyan Messenger Bot
+ * CROW V1 — /help — Command Center
+ * Copyright © 2026 Itachi
+ * CROW Messenger Bot
  */
 "use strict";
 
 const CATEGORIES = [
   {
-    icon: "⚡",
+    icon: "◈",
     title: "مركز الإدارة",
     cmds: [
-      { name: "nm",        icon: "🧱", desc: "تثبيت اسم الغروب وحمايته من التغيير" },
-      { name: "nick",      icon: "🎴", desc: "حماية كنيات الأعضاء ومراقبة تغييراتها" },
-      { name: "groupimg",  icon: "🌠", desc: "تغيير صورة الغروب وتثبيتها" },
-      { name: "groupname", icon: "🏷️", desc: "تحديث اسم الغروب بالاسم الذي تحدده" },
-      { name: "setavatar", icon: "🪪", desc: "تعديل صورة حساب سايان" },
-      { name: "addlock",   icon: "🔗", desc: "الحفاظ على عدد أعضاء الغروب" },
-      { name: "thread",    icon: "🧩", desc: "ضبط إعدادات الغروب والرسائل التلقائية" },
-      { name: "out",       icon: "⏏️", desc: "إخراج سايان من الغروب الحالي" },
+      { name: "nm",        icon: "▣", desc: "تثبيت اسم الغروب ومنع العبث به" },
+      { name: "nick",      icon: "◆", desc: "حماية كنيات الأعضاء ومراقبة تغييراتها" },
+      { name: "groupimg",  icon: "◉", desc: "تغيير صورة الغروب وتثبيتها" },
+      { name: "groupname", icon: "▰", desc: "تحديث اسم الغروب بالاسم المطلوب" },
+      { name: "setavatar", icon: "◎", desc: "تغيير صورة حساب CROW" },
+      { name: "addlock",   icon: "⛓", desc: "تثبيت عدد أعضاء الغروب وحمايته" },
+      { name: "thread",    icon: "⌘", desc: "إدارة إعدادات الغروب والرسائل التلقائية" },
+      { name: "out",       icon: "↪", desc: "إخراج CROW من الغروب الحالي" },
     ],
   },
 
   {
-    icon: "🧑‍🤝‍🧑",
-    title: "الأعضاء",
+    icon: "◉",
+    title: "إدارة الأعضاء",
     cmds: [
-      { name: "all",      icon: "📣", desc: "استدعاء جميع أعضاء الغروب" },
-      { name: "tag",      icon: "🎯", desc: "إنشاء وإدارة مجموعات التاق" },
-      { name: "kick",     icon: "🥾", desc: "إزالة عضو من الغروب" },
-      { name: "adduser",  icon: "➕", desc: "إضافة أعضاء إلى الغروب" },
-      { name: "addadmin", icon: "♛", desc: "إدارة مشرفي سايان" },
-      { name: "ban",      icon: "🚷", desc: "منع مستخدم من استعمال البوت" },
-      { name: "warn",     icon: "🚨", desc: "إدارة التحذيرات والتنبيهات" },
-      { name: "badwords", icon: "🧼", desc: "تنقية المحادثة من الكلمات المحددة" },
+      { name: "all",      icon: "✦", desc: "استدعاء أعضاء الغروب" },
+      { name: "tag",      icon: "◎", desc: "إنشاء وإدارة قوائم التاق" },
+      { name: "kick",     icon: "×", desc: "إزالة عضو من الغروب" },
+      { name: "adduser",  icon: "+", desc: "إضافة أعضاء إلى الغروب" },
+      { name: "addadmin", icon: "♛", desc: "إدارة مشرفي CROW" },
+      { name: "ban",      icon: "⊘", desc: "حظر مستخدم من استخدام البوت" },
+      { name: "warn",     icon: "!", desc: "إدارة التحذيرات والتنبيهات" },
+      { name: "badwords", icon: "≠", desc: "تنقية المحادثة من الكلمات المحددة" },
     ],
   },
 
   {
-    icon: "🔄",
+    icon: "⟳",
     title: "التشغيل التلقائي",
     cmds: [
-      { name: "angel", icon: "🪽", desc: "تشغيل رسائل دورية تلقائية" },
-      { name: "divel", icon: "🌘", desc: "إرسال رسائل بفواصل زمنية متغيرة" },
-      { name: "greet", icon: "🌟", desc: "إظهار رسالة ترحيب خاصة بسايان" },
+      { name: "angel", icon: "⌁", desc: "إرسال رسائل تلقائية بفواصل زمنية" },
+      { name: "divel", icon: "◐", desc: "إرسال رسائل بفترات زمنية متغيرة" },
+      { name: "greet", icon: "✧", desc: "عرض رسالة الترحيب الخاصة بـ CROW" },
     ],
   },
 
   {
-    icon: "🎵",
+    icon: "♫",
     title: "الوسائط والترفيه",
     cmds: [
-      { name: "song",    icon: "🎼", desc: "البحث عن الأغاني وتحميلها" },
-      { name: "video",   icon: "📹", desc: "البحث عن فيديوهات وتحميلها" },
-      { name: "tiktok",  icon: "🎞️", desc: "تحميل فيديوهات TikTok" },
-      { name: "sticker", icon: "🧷", desc: "تحويل الصور إلى ملصقات" },
-      { name: "pair",    icon: "💞", desc: "اختيار شخصين بشكل عشوائي" },
+      { name: "song",    icon: "♪", desc: "البحث عن الأغاني وتحميلها" },
+      { name: "video",   icon: "▶", desc: "البحث عن فيديوهات وتحميلها" },
+      { name: "tiktok",  icon: "▸", desc: "تحميل فيديوهات TikTok" },
+      { name: "sticker", icon: "◇", desc: "تحويل الصور إلى ملصقات" },
+      { name: "pair",    icon: "∞", desc: "اختيار شخصين بشكل عشوائي" },
     ],
   },
 
   {
-    icon: "🧠",
-    title: "الذكاء الاصطناعي",
+    icon: "⌬",
+    title: "الذكاء والأدوات",
     cmds: [
-      { name: "ai",        icon: "🧬", desc: "محادثة مباشرة مع الذكاء الاصطناعي" },
-      { name: "imagegen",  icon: "🖍️", desc: "إنشاء صور من وصف نصي" },
-      { name: "pinterest", icon: "🔭", desc: "البحث عن صور من Pinterest" },
-      { name: "webss",     icon: "🖥️", desc: "التقاط صورة لصفحة ويب" },
+      { name: "ai",        icon: "◈", desc: "التحدث مع الذكاء الاصطناعي" },
+      { name: "imagegen",  icon: "✎", desc: "إنشاء صورة من وصف نصي" },
+      { name: "pinterest", icon: "⌕", desc: "البحث عن صور Pinterest" },
+      { name: "webss",     icon: "▤", desc: "التقاط صورة لصفحة ويب" },
     ],
   },
 
   {
-    icon: "🧰",
+    icon: "⚙",
     title: "الخدمات",
     cmds: [
-      { name: "translate", icon: "🔤", desc: "تحويل النص بين اللغات" },
-      { name: "weather",   icon: "🌦️", desc: "معرفة الطقس في مدينة معينة" },
-      { name: "uid",       icon: "🆔", desc: "عرض معرف حساب فيسبوك" },
-      { name: "info",      icon: "📑", desc: "عرض بيانات الغروب أو أحد أعضائه" },
-      { name: "ping",      icon: "📡", desc: "اختبار سرعة استجابة سايان" },
-      { name: "rank",      icon: "🏅", desc: "عرض المستوى ونقاط الخبرة" },
-      { name: "unsend",    icon: "♻️", desc: "إزالة رسالة أرسلها سايان" },
+      { name: "translate", icon: "文", desc: "ترجمة النصوص بين اللغات" },
+      { name: "weather",   icon: "☼", desc: "معرفة حالة الطقس في مدينة" },
+      { name: "uid",       icon: "#", desc: "عرض معرف حساب فيسبوك" },
+      { name: "info",      icon: "≡", desc: "عرض معلومات الغروب أو أحد أعضائه" },
+      { name: "ping",      icon: "≈", desc: "قياس سرعة استجابة CROW" },
+      { name: "rank",      icon: "◇", desc: "عرض المستوى ونقاط الخبرة" },
+      { name: "unsend",    icon: "↶", desc: "حذف رسالة أرسلها CROW" },
     ],
   },
 
   {
-    icon: "🪙",
+    icon: "¤",
     title: "النظام الاقتصادي",
     cmds: [
       {
         name: "economy",
-        icon: "💳",
+        icon: "$",
         desc: "الرصيد والمكافآت والألعاب المالية",
       },
     ],
   },
 
   {
-    icon: "🛠️",
+    icon: "⌘",
     title: "إعدادات النظام",
     cmds: [
       {
         name: "prefix",
-        icon: "🔧",
+        icon: "/",
         desc: "تغيير رمز بداية الأوامر",
       },
       {
         name: "autoseen",
-        icon: "👁️‍🗨️",
-        desc: "التحكم في مشاهدة الرسائل تلقائياً",
+        icon: "◉",
+        desc: "التحكم بالمشاهدة التلقائية للرسائل",
       },
       {
         name: "uptime",
-        icon: "⌛",
-        desc: "معرفة مدة تشغيل سايان",
+        icon: "◷",
+        desc: "عرض مدة تشغيل CROW",
       },
       {
         name: "chats",
-        icon: "🗃️",
+        icon: "▦",
         desc: "إدارة المحادثات والغروبات",
       },
       {
         name: "getstate",
-        icon: "🗝️",
+        icon: "⌑",
         desc: "استخراج AppState للمالك",
       },
       {
         name: "help",
-        icon: "📚",
-        desc: "فتح مركز أوامر سايان",
+        icon: "?",
+        desc: "فتح مركز أوامر CROW",
       },
     ],
   },
@@ -177,7 +177,7 @@ const CMD_DETAILS = {
   },
 
   out: {
-    usage: "/out — إخراج سايان من الغروب",
+    usage: "/out — إخراج CROW من الغروب",
     role: "👑 Owner",
     cat: "الإدارة",
   },
@@ -345,7 +345,7 @@ const CMD_DETAILS = {
   },
 
   unsend: {
-    usage: "/unsend — الرد على رسالة سايان لحذفها",
+    usage: "/unsend — الرد على رسالة CROW لحذفها",
     role: "👤 User",
     cat: "الخدمات",
   },
@@ -369,7 +369,7 @@ const CMD_DETAILS = {
   },
 
   uptime: {
-    usage: "/uptime — عرض مدة تشغيل سايان",
+    usage: "/uptime — عرض مدة تشغيل CROW",
     role: "👤 User",
     cat: "النظام",
   },
@@ -396,7 +396,7 @@ const CMD_DETAILS = {
   },
 };
 
-const LINE = "════════════════════════════════════";
+const LINE = "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━";
 
 function buildHelpAll(prefix) {
   const allCmds = global.GoatBot?.commands;
@@ -421,9 +421,9 @@ function buildHelpAll(prefix) {
   const lines = [];
 
   lines.push(LINE);
-  lines.push("      S A I Y A N  •  C O M M A N D S");
-  lines.push("      مركز التحكم الذكي لمسنجر");
-  lines.push(`      Magnus  |  Prefix: ${prefix}`);
+  lines.push("          C R O W  •  C O R E");
+  lines.push("          مركز أوامر CROW");
+  lines.push(`          Itachi  |  Prefix: ${prefix}`);
   lines.push(LINE);
   lines.push("");
 
@@ -434,28 +434,28 @@ function buildHelpAll(prefix) {
     );
 
     lines.push(
-      ` ╭─ ${cat.icon} ${cat.title} ${"─".repeat(padLen)}╮`
+      `┏━ ${cat.icon} ${cat.title} ${"━".repeat(padLen)}┓`
     );
 
     for (const cmd of cat.cmds) {
       lines.push(
-        ` │ ${cmd.icon} ${prefix}${cmd.name.padEnd(
+        `┃ ${cmd.icon} ${prefix}${cmd.name.padEnd(
           13
         )} ${cmd.desc}`
       );
     }
 
     lines.push(
-      ` ╰${"─".repeat(35)}╯`
+      `┗${"━".repeat(35)}┛`
     );
 
     lines.push("");
   }
 
   lines.push(LINE);
-  lines.push(`  📦 عدد الأوامر: ${totalCmds}`);
-  lines.push(`  🔎 ${prefix}help [الأمر] ← تفاصيل الأمر`);
-  lines.push(`  Magnus  •  Saiyan`);
+  lines.push(`  ⌬ عدد الأوامر: ${totalCmds}`);
+  lines.push(`  ⌕ ${prefix}help [الأمر] ← معلومات الأمر`);
+  lines.push(`  Itachi  •  CROW`);
   lines.push(LINE);
 
   return lines.join("\n");
@@ -496,7 +496,7 @@ function buildHelpOne(rawName, prefix) {
   const desc =
     config.description ||
     config.longDescription ||
-    "لا توجد تفاصيل إضافية لهذا الأمر.";
+    "لا توجد معلومات إضافية متوفرة لهذا الأمر.";
 
   const usage =
     config.guide?.en
@@ -542,34 +542,36 @@ function buildHelpOne(rawName, prefix) {
 
   lines.push(LINE);
   lines.push(
-    `  ${icon}  SAIYAN  •  ${prefix}${cmdName.toUpperCase()}`
+    `  ${icon}  CROW  •  ${prefix}${cmdName.toUpperCase()}`
   );
   lines.push(LINE);
   lines.push("");
 
-  lines.push("  ◈ نبذة عن الأمر:");
+  lines.push("  ◇ تعريف:");
   lines.push(`     ${desc}`);
   lines.push("");
 
-  lines.push("  ◈ طريقة الاستخدام:");
+  lines.push("  ◇ الاستخدام:");
 
-  for (const l of String(usage).split("\n")) {
+  for (
+    const l of String(usage).split("\n")
+  ) {
     lines.push(`     ${l}`);
   }
 
   lines.push("");
 
-  lines.push(`  ◇ القسم     : ${cat}`);
-  lines.push(`  ◇ الصلاحية  : ${role}`);
+  lines.push(`  ▸ القسم    : ${cat}`);
+  lines.push(`  ▸ الصلاحية : ${role}`);
 
   if (aliases.length) {
     lines.push(
-      `  ◇ البدائل   : ${aliases.join("، ")}`
+      `  ▸ البدائل  : ${aliases.join("، ")}`
     );
   }
 
   lines.push("");
-  lines.push("  Magnus  •  Saiyan");
+  lines.push("  Itachi  •  CROW");
   lines.push("");
   lines.push(LINE);
 
@@ -589,7 +591,7 @@ module.exports = {
 
     version: "5.0",
 
-    author: "Magnus",
+    author: "Itachi",
 
     countDown: 3,
 
@@ -598,7 +600,7 @@ module.exports = {
     category: "info",
 
     description:
-      "دليل أوامر Saiyan الكامل",
+      "مركز أوامر CROW ودليل استخدام البوت",
 
     guide: {
       en:
